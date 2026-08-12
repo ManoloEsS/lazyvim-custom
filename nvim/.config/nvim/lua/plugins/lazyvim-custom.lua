@@ -20,6 +20,7 @@ local function setup_keymaps()
   vim.keymap.set('n', '<leader>we', '<C-w>=', { desc = 'Equalize splits' })
 
   vim.keymap.set('n', '<leader>a', [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gIc<Left><Left><Left><Left>]], { desc = 'Replace word in file' })
+  vim.keymap.set({ 'n', 'v' }, '<leader>rs', 's', { desc = 'Substitute' })
 
   vim.keymap.set('n', '<leader>ra', function()
     local ext = vim.fn.expand('%:e')
