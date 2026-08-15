@@ -94,5 +94,11 @@ return {
         end),
       })
     end,
+    opts = function(_, opts)
+      vim.opt.relativenumber = true
+      vim.opt.ttimeout = true
+      vim.opt.ttimeoutlen = 20
+      return opts
+    end,
   },
 }

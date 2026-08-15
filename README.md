@@ -42,7 +42,8 @@ sudo pacman -S yazi
 ## Included Preferences
 
 - Four-space indentation.
-- Relative line numbers.
+- Relative line numbers (`relativenumber = true`).
+- Fast recognition of standalone Esc with a 20ms terminal timeout.
 - Omarchy's automatic formatting behavior preserved (`vim.g.autoformat = false`).
 - Hidden tabline/bufferline display via `showtabline = 0`.
 - Snacks picker extra for undo history and mark browsing.
