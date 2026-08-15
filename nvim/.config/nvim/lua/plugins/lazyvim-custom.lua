@@ -76,6 +76,7 @@ return {
     "LazyVim/LazyVim",
     init = function()
       vim.g.autoformat = false
+      vim.opt.clipboard = {}
       vim.opt.relativenumber = true
       vim.opt.tabstop = 4
       vim.opt.softtabstop = 4
