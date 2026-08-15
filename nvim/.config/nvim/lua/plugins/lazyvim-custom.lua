@@ -76,7 +76,6 @@ return {
     "LazyVim/LazyVim",
     init = function()
       vim.g.autoformat = false
-      vim.opt.clipboard = {}
       vim.opt.relativenumber = true
       vim.opt.tabstop = 4
       vim.opt.softtabstop = 4
@@ -88,7 +87,11 @@ return {
       vim.api.nvim_create_autocmd("User", {
         pattern = "VeryLazy",
         once = true,
-        callback = vim.schedule_wrap(setup_keymaps),
+        callback = vim.schedule_wrap(function()
+          -- LazyVim restores its default clipboard option during VeryLazy.
+          vim.opt.clipboard = {}
+          setup_keymaps()
+        end),
       })
     end,
   },
