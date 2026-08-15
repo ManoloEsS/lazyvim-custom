@@ -24,6 +24,14 @@ make a surgical merge into the existing `lazyvim.json` extras array:
 
 ```text
 ~/.config/nvim/lua/plugins/lazyvim-custom.lua
+~/.config/nvim/lua/plugins/hide-bufferline.lua
+~/.config/nvim/lua/plugins/marks.lua
+~/.config/nvim/lua/plugins/blink.lua
+~/.config/nvim/lua/plugins/harpoon.lua
+~/.config/nvim/lua/plugins/language-formatting.lua
+~/.config/nvim/lua/plugins/yazi.lua
+~/.config/nvim/lua/plugins/orgmode.lua
+~/.config/nvim/lua/plugins/smear-cursor.lua
 ```
 
 LazyVim extras must be listed in `~/.config/nvim/lazyvim.json`, before the
@@ -37,12 +45,13 @@ This avoids stow conflicts with regular files already created by Omarchy.
 After Omarchy has created its Neovim configuration:
 
 ```sh
-git clone https://github.com/USERNAME/lazyvim-custom.git ~/lazyvim-custom
+git clone https://github.com/ManoloEsS/lazyvim-custom.git ~/lazyvim-custom
 bash ~/lazyvim-custom/scripts/install.sh
 ```
 
-The installer merges the Blink, Snacks picker, and Smear Cursor extras into
-the existing `lazyvim.json`, then runs Stow for the new plugin files.
+The installer merges Blink, Snacks picker, Prettier, Go, Python, Rust,
+TypeScript, and Smear Cursor extras into the existing `lazyvim.json`, then
+runs Stow for the new plugin files.
 
 Never use `stow --adopt` for this overlay. Adoption would move Omarchy's base files into the custom repository and undermine the layered setup. Never replace the entire `lazyvim.json`; merge only the requested extras.
 
@@ -51,6 +60,9 @@ To remove the overlay:
 ```sh
 stow -d ~/lazyvim-custom -t ~ -D nvim
 ```
+
+Then disable the overlay's eight extras with `:LazyExtras` and run
+`:Lazy sync`. Unstowing does not remove entries from `lazyvim.json`.
 
 ## Change Guidelines
 
@@ -70,7 +82,8 @@ stow -d ~/lazyvim-custom -t ~ -D nvim
 Run these checks after changes:
 
 ```sh
-luac -p ~/.config/nvim/lua/plugins/lazyvim-custom.lua
+bash -n ~/lazyvim-custom/scripts/install.sh
+stylua --check ~/lazyvim-custom/nvim/.config/nvim/lua/plugins
 nvim --headless -u ~/.config/nvim/init.lua '+Lazy! sync' +qa
 ```
 

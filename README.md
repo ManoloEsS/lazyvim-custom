@@ -2,14 +2,14 @@
 
 Small, stow-ready preferences layered on top of Omarchy's base LazyVim configuration.
 
-This package intentionally adds one file under `lua/plugins/` instead of replacing Omarchy's `lua/config/options.lua`, `keymaps.lua`, or `autocmds.lua`. Those files already exist in a fresh installation, and replacing them would discard Omarchy defaults.
+This package intentionally adds plugin specs under `lua/plugins/` instead of replacing Omarchy's `lua/config/options.lua`, `keymaps.lua`, or `autocmds.lua`. Those files already exist in a fresh installation, and replacing them would discard Omarchy defaults.
 
 ## Fresh Omarchy Installation
 
 After Omarchy has created its Neovim configuration, clone this repository into `~/lazyvim-custom` and run the installer:
 
 ```sh
-git clone https://github.com/USERNAME/lazyvim-custom.git ~/lazyvim-custom
+git clone https://github.com/ManoloEsS/lazyvim-custom.git ~/lazyvim-custom
 bash ~/lazyvim-custom/scripts/install.sh
 ```
 
@@ -21,11 +21,11 @@ The resulting overlay files are:
 
 ```text
 ~/.config/nvim/lua/plugins/lazyvim-custom.lua
-~/.config/nvim/lua/plugins/enable-snacks-picker.lua
 ~/.config/nvim/lua/plugins/hide-bufferline.lua
 ~/.config/nvim/lua/plugins/marks.lua
 ~/.config/nvim/lua/plugins/blink.lua
 ~/.config/nvim/lua/plugins/harpoon.lua
+~/.config/nvim/lua/plugins/language-formatting.lua
 ~/.config/nvim/lua/plugins/yazi.lua
 ~/.config/nvim/lua/plugins/orgmode.lua
 ~/.config/nvim/lua/plugins/smear-cursor.lua
@@ -63,3 +63,7 @@ To undo the overlay:
 ```sh
 stow -d ~/lazyvim-custom -t ~ -D nvim
 ```
+
+Then use `:LazyExtras` to disable the eight extras listed in
+`scripts/install.sh` and run `:Lazy sync`. Unstowing removes the custom plugin
+specs but intentionally does not rewrite `lazyvim.json`.

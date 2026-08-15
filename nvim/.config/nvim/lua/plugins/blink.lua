@@ -1,12 +1,13 @@
 return {
   {
-    'saghen/blink.cmp',
+    "saghen/blink.cmp",
     opts = {
       keymap = {
-        ['<Tab>'] = false,
-        ['<S-Tab>'] = false,
-        ['<C-.>'] = { 'snippet_forward', 'fallback' },
-        ['<C-,>'] = { 'snippet_backward', 'fallback' },
+        -- Explicit fallback entries prevent LazyVim from restoring snippet navigation.
+        ["<Tab>"] = { "fallback" },
+        ["<S-Tab>"] = { "fallback" },
+        ["<C-.>"] = { "snippet_forward", "fallback" },
+        ["<C-,>"] = { "snippet_backward", "fallback" },
       },
     },
   },

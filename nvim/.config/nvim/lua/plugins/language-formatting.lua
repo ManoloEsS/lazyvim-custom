@@ -20,22 +20,37 @@ local organize_imports_filetypes = {
 local function organize_imports(buf)
   local clients = vim.lsp.get_clients({ bufnr = buf })
   for _, client in ipairs(clients) do
-    if client:supports_method('textDocument/codeAction', buf) then
+    if client:supports_method("textDocument/codeAction", buf) then
       local params = vim.lsp.util.make_range_params(0, client.offset_encoding)
+      params.textDocument = vim.lsp.util.make_text_document_params(buf)
       params.context = {
         diagnostics = {},
-        only = { 'source.organizeImports' },
+        only = { "source.organizeImports" },
       }
 
-      local response = client:request_sync('textDocument/codeAction', params, 1000)
+      local response = client:request_sync("textDocument/codeAction", params, 1000, buf)
       local actions = response and response.result or {}
       for _, action in ipairs(actions) do
-        if action.edit then
-          vim.lsp.util.apply_workspace_edit(action.edit, client.offset_encoding)
-          return
-        end
-        if action.command then
-          vim.lsp.buf.execute_command(action.command)
+        if not action.disabled then
+          if not action.edit and not action.command and client:supports_method("codeAction/resolve", buf) then
+            local resolved = client:request_sync("codeAction/resolve", action, 1000, buf)
+            action = resolved and resolved.result or action
+          end
+
+          if action.edit then
+            vim.lsp.util.apply_workspace_edit(action.edit, client.offset_encoding)
+          end
+
+          if action.command then
+            local command = type(action.command) == "table" and action.command
+              or {
+                title = action.title,
+                command = action.command,
+                arguments = action.arguments,
+              }
+            client:request_sync("workspace/executeCommand", command, 1000, buf)
+          end
+
           return
         end
       end
@@ -45,33 +60,30 @@ end
 
 return {
   {
-    'LazyVim/LazyVim',
+    "stevearc/conform.nvim",
     init = function()
-      vim.api.nvim_create_autocmd('FileType', {
-        group = vim.api.nvim_create_augroup('lazyvim_custom_format_filetypes', { clear = true }),
+      vim.api.nvim_create_autocmd("FileType", {
+        group = vim.api.nvim_create_augroup("lazyvim_custom_format_filetypes", { clear = true }),
         pattern = vim.tbl_keys(format_filetypes),
         callback = function(args)
           vim.b[args.buf].autoformat = true
         end,
       })
 
-      vim.api.nvim_create_autocmd('BufWritePre', {
-        group = vim.api.nvim_create_augroup('lazyvim_custom_organize_imports', { clear = true }),
-        pattern = { '*.js', '*.jsx', '*.py', '*.rs', '*.ts', '*.tsx' },
+      vim.api.nvim_create_autocmd("BufWritePre", {
+        group = vim.api.nvim_create_augroup("lazyvim_custom_organize_imports", { clear = true }),
+        pattern = { "*.js", "*.jsx", "*.py", "*.rs", "*.ts", "*.tsx" },
         callback = function(args)
-          if organize_imports_filetypes[vim.bo[args.buf].filetype] then
+          if LazyVim.format.enabled(args.buf) and organize_imports_filetypes[vim.bo[args.buf].filetype] then
             organize_imports(args.buf)
           end
         end,
       })
     end,
-  },
-  {
-    'stevearc/conform.nvim',
     opts = function(_, opts)
       opts.formatters_by_ft = opts.formatters_by_ft or {}
-      opts.formatters_by_ft.python = { 'ruff_format' }
-      opts.formatters_by_ft.rust = { 'rustfmt' }
+      opts.formatters_by_ft.python = { "ruff_format" }
+      opts.formatters_by_ft.rust = { "rustfmt" }
     end,
   },
 }
