@@ -5,8 +5,6 @@ local function setup_keymaps()
   vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv", { desc = "Move line up" })
   vim.keymap.set("n", "J", "mzJ`z", { desc = "Join lines" })
 
-  vim.keymap.set("n", "<C-d>", "<C-d>zz", { desc = "Half page down" })
-  vim.keymap.set("n", "<C-u>", "<C-u>zz", { desc = "Half page up" })
   vim.keymap.set("n", "n", "nzzzv", { desc = "Next search result" })
   vim.keymap.set("n", "N", "Nzzzv", { desc = "Previous search result" })
 
