@@ -20,6 +20,7 @@ order: base plugins, LazyVim extras, then custom plugins.
 The resulting overlay files are:
 
 ```text
+~/.config/nvim/plugin/after/transparency.lua
 ~/.config/nvim/lua/plugins/lazyvim-custom.lua
 ~/.config/nvim/lua/plugins/hide-bufferline.lua
 ~/.config/nvim/lua/plugins/marks.lua
@@ -33,6 +34,32 @@ The resulting overlay files are:
 
 Start Neovim and run `:Lazy sync` if prompted. The overlay does not replace `init.lua`, `lazy.lua`, `lazyvim.json`, or `lazy-lock.json`.
 
+## Theme Transparency
+
+`nvim/.config/nvim/plugin/after/transparency.lua` removes only the background
+attribute from Neovim UI highlight groups while preserving their foreground
+colors and styles. It covers completion menus, floating documentation, and
+other popup groups so they match the transparent editor background across
+themes.
+
+The `LspInlayHint` group is included specifically for language-server inlay
+hints. For example, Rust Analyzer can render an inferred type such as `:i32`
+between `let x` and `= 1`. Tokyo Night and some other themes give that hint a
+colored background, which creates an unwanted block behind the inline text.
+Removing only its background keeps the hint readable without changing the
+theme's hint color.
+
+This belongs in the custom overlay rather than an Omarchy stock theme because
+`/usr/share/omarchy/themes/` is package-managed and changes there would be
+lost during updates. The Stow package also deploys the same fix on other
+systems. If Neovim is already open after installing or updating the overlay,
+reload it with:
+
+```vim
+:source ~/.config/nvim/plugin/after/transparency.lua
+:redraw!
+```
+
 Yazi itself is a system application rather than a Mason tool. Install it separately:
 
 ```sh
@@ -45,6 +72,7 @@ sudo pacman -S yazi
 - Relative line numbers (`relativenumber = true`).
 - Fast recognition of standalone Esc with a 20ms terminal timeout.
 - Omarchy's automatic formatting behavior preserved (`vim.g.autoformat = false`).
+- Transparent completion, inlay-hint, and floating popup backgrounds across themes.
 - Hidden tabline/bufferline display via `showtabline = 0`.
 - Snacks picker extra for undo history and mark browsing.
 - `marks.nvim` for mark management.
